@@ -1,12 +1,26 @@
-FROM resin/rpi-raspbian:jessie
+FROM balenalib/raspberry-pi-debian:buster
 
-RUN echo "deb http://www.lesbonscomptes.com/upmpdcli/downloads/raspbian-jessie/ unstable main" > /etc/apt/sources.list.d/upmpdcli.list
-RUN echo "deb-src http://www.lesbonscomptes.com/upmpdcli/downloads/raspbian-jessie/ unstable main" >> /etc/apt/sources.list.d/upmpdcli.list
+RUN install_packages wget
 
-RUN apt-get update
-RUN apt-get install upmpdcli -y --force-yes
+RUN wget -O /usr/share/keyrings/lesbonscomptes.gpg https://www.lesbonscomptes.com/pages/lesbonscomptes.gpg 
+
+RUN wget -O /etc/apt/sources.list.d/upmpdcli-rbuster.list https://www.lesbonscomptes.com/upmpdcli/pages/upmpdcli-rbuster.list
+
+RUN install_packages \ 
+  upmpdcli
+  # Optional streaming services
+  #upmpdcli-qobuz
+  #upmpdcli-spotify
+  # Optional Songcast gateway
+  #sc2mpd
+  # Optional Songcast Receiver control web interface
+  #scweb
 
 EXPOSE 1900/udp
 EXPOSE 49152
 
-ENTRYPOINT ["upmpdcli"]
+#USER root
+
+#COPY ./upmpdcli.conf /etc/upmpdcli.conf
+
+ENTRYPOINT ["upmpdcli", "-c", "/etc/upmpdcli.conf"]

@@ -1,6 +1,17 @@
-#https://hub.docker.com/r/wernight/mopidy/
-upmpdcli:
-  build: ../.
-  dockerfile: DockerfileRPI
-  command: "-h mopidyhost -f dlnahost"
-  net: "host"
+version: "3.0"
+
+services:
+  upmpdcli:
+#    build: 
+#      context: ../.
+    image: stevedenman/upmpdcli:latest
+#      dockerfile: DockerfileRPI
+    network_mode: "host"
+    container_name: upmpdcli
+#    volumes:
+#       - ../upmpdcli.conf:/etc/upmpdcli.conf
+    environment:
+      UPMPD_HOST: 192.168.75.8
+      UPMPD_PORT: 6600
+#      UPMPD_FRIENDLYNAME: dlnahost
+    command: "-c /etc/upmpdcli.conf"
